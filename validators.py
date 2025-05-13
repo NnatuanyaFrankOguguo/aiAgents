@@ -1,3 +1,4 @@
+# %%
 from pydantic import BaseModel, field_validator, Field
 from typing import  Optional, Literal
 from datetime import datetime
@@ -14,10 +15,12 @@ from datetime import datetime
 #     is_calendar_event: bool = Field(description="Whether the event is a calendar event or not.")
 #     confidence_score : float = Field(description="The confidence score of the event between 0 and 1.")
 
+# %%
 class Participant(BaseModel):
     name: str = Field(description="Name of the participant")
     email: str = Field(description="Email of the participant")
 
+# %%
 class EventDetails(BaseModel):
     """Second LLM call: Parse Specific event details"""
 
@@ -33,7 +36,8 @@ class EventDetails(BaseModel):
         if not participants:
             raise ValueError("At least one participant is required.")
         return participants
-    
+
+# %%
 class EventConfirmation(BaseModel):
     """ Third LLM call: Confirm the event details """
 
@@ -42,7 +46,7 @@ class EventConfirmation(BaseModel):
 
 
 # 1.2 RESCHEDULE OR MODIFY EVENT 
-
+# %%
 class CalendarRequestType(BaseModel):
     """Router LLM call: Determine the type of calendar request"""
 
@@ -52,14 +56,14 @@ class CalendarRequestType(BaseModel):
     confidence_score : float = Field(description="The confidence score of the event between 0 and 1.")
     description: str = Field(description="Cleaned description of the event request.")
 
-
+# %%
 class Change(BaseModel):
     """Router LLM call: Determine the type of change (Details for change an existing event)"""
 
     field: str = Field(description="Field to change")
     new_value: str = Field(description="New value for the field")
 
-
+# %%
 class ModifyEventDetails(BaseModel):
     """Router LLM call: Details for modifying an existing event """
 
@@ -76,7 +80,7 @@ class ModifyEventDetails(BaseModel):
         if not changes:
             raise ValueError("At least one change is required.")
         return changes
-    
+# %%   
 class CalendarResponse(BaseModel):
     """Router LLM call: Confirm the modified event details """
 
@@ -85,3 +89,4 @@ class CalendarResponse(BaseModel):
     calender_link: Optional[str] = Field(description="Link to the calendar event (generated calender link if applicable).")
 
 # then go to the prompt_router to define the routing processing
+# %%
